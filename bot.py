@@ -16,7 +16,7 @@ BOOKS = {
     "book2": {"name": "Медитация", "price": 700},
 }
 
-SBP_QR_LINK_TEMPLATE = "https://qr.nspk.ru/ALIAS?type=02&amount={amount}&currency=810&crc=CRC"
+SBP_QR_LINK_TEMPLATE = os.getenv("SBP_QR_LINK_TEMPLATE")
 
 # Google Sheets (твой creds_dict)
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
