@@ -1,5 +1,6 @@
 import asyncio
 import os
+import json
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
@@ -8,8 +9,9 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")  # env в Pella
+GOOGLE_SHEETS_KEY = os.getenv("GOOGLE_SHEETS_KEY")
+GOOGLE_CREDS_JSON = os.getenv("GOOGLE_CREDS_JSON")
 creds_dict = json.loads(GOOGLE_CREDS_JSON)
-GOOGLE_SHEETS_KEY = os.getenv(GOOGLE_SHEETS_KEY)
 
 BOOKS = {
     "book1": {"name": "Йога для начинающих", "price": 500},
