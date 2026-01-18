@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  bookbot:
+    build: .
+    restart: always
+    container_name: book-sales-bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - GOOGLE_SHEETS_KEY=${GOOGLE_SHEETS_KEY}
+      - GOOGLE_CREDS_JSON=${GOOGLE_CREDS_JSON}
+      - SBP_QR_LINK_TEMPLATE=${SBP_QR_LINK_TEMPLATE}
+    # Логи в docker logs
+    stdin_open: true
+    tty: true
+
