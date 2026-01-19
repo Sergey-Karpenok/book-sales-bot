@@ -37,8 +37,8 @@ async def start_handler(message: Message):
         book_id, amount_str = payload.split("_")
         book = BOOKS.get(book_id)
         if book:
-            amount = int(amount_str)
-            sbp_link = SBP_QR_LINK_TEMPLATE.format(amount=amount)
+            amount_cents = int(amount_str) * 100
+            sbp_link = SBP_QR_LINK_TEMPLATE.format(amount=amount_cents)
 
             kb = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="Оплатить по СБП", url=sbp_link)],
@@ -48,6 +48,7 @@ async def start_handler(message: Message):
             await message.answer(
                 f"<b>{book['name']}</b>\nЦена: {amount} ₽\n\n"
                 f"1. Нажми 'Оплатить по СБП'\n"
+                f"2. Не получилось оплать по ссылкке, сделайте перевод по СБП на номер +7(911)313-41-99'\n"
                 f"2. После оплаты нажми 'Я оплатил'",
                 reply_markup=kb
             )
