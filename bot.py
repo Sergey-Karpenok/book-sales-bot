@@ -38,20 +38,25 @@ async def start_handler(message: Message):
         book = BOOKS.get(book_id)
         if book:
             amount_cents = int(amount_str) * 100
-            sbp_link = SBP_QR_LINK_TEMPLATE.format(amount=amount_cents)
+            sbp_link = SBP_QR_LINK_TEMPLATE
 
             kb = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="Оплатить по СБП", url=sbp_link)],
                 [InlineKeyboardButton(text="Я оплатил", callback_data=f"paid_{payload}")]
             ])
-
+            
             await message.answer(
-                f"<b>{book['name']}</b>\nЦена: {amount_str} ₽\n\n"
-                f"1. Нажми 'Оплатить по СБП'\n"
-                f"2. Если ссылка не сработала — сделай перевод по СБП на номер +7 911 313-41-99.\n"
-                f"2. После оплаты нажми 'Я оплатил'",
-                reply_markup=kb
-            )
+                f"<b>{book['name']}</b>\n"
+                f"💰 <b>{amount_str} ₽</b>\n\n"
+                f"💳 <b>Ссылка Сбер Online:</b>\n{sbp_link}\n"
+                f"📱 <b>ИЛИ СБП перевод:</b>\n"
+                f"Получатель: <b>К. Сергей</b>\n"
+                f"Карта Тинькофф: <b>+7 911 313-41-99</b>\n\n"
+                f"После оплаты нажми «Я оплатил» ✅",
+                reply_markup=kb,
+                parse_mode="HTML"
+            )    
+
         else:
             await message.answer("Книга не найдена.")
     else:
