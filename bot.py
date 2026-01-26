@@ -75,7 +75,7 @@ async def start_handler(message: Message):
                 f"💰 *{amount_str} ₽*\n\n"
                 f"📱 *Для ручного СБП перевода:*\n"
                 f"*Получатель\\: К\\. Сергей*\n"
-                f"*Карта Тинькофф\\: `+7 911 313-41-99`*\n"
+                f"*Карта Тинькофф\\:*\n`+7 911 313-41-99`\n"
                 f"*После оплаты нажми «Я оплатил» ✅*",
                 reply_markup=kb,
                 parse_mode="MarkdownV2"
@@ -101,7 +101,7 @@ async def start_handler(message: Message):
         else:
             await message.answer("❌ Книга не найдена.")
     else:
-        await message.answer("👋 Привет! Сканируй QR-код на книге.")
+        await message.answer("👋 Намаскар! Сканируй QR-код в каталоге.")
 
 @dp.callback_query(F.data.startswith("paid_"))
 async def paid_handler(callback: CallbackQuery):
