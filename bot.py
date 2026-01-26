@@ -7,6 +7,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 from aiogram.client.default import DefaultBotProperties
 import gspread
 from google.oauth2.service_account import Credentials
+from aiogram import Router
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")  # env в Pella
 GOOGLE_SHEETS_KEY = os.getenv("GOOGLE_SHEETS_KEY")
@@ -52,6 +53,8 @@ sheet = gc.open_by_key(GOOGLE_SHEETS_KEY).sheet1
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 dp = Dispatcher()
+router = Router()
+dp.include_router(router)
 
 @dp.message(CommandStart())
 async def start_handler(message: Message):
@@ -65,43 +68,36 @@ async def start_handler(message: Message):
             sbp_link = SBP_QR_LINK_TEMPLATE.format(amount=amount_cents)
 
             kb = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="Оплатить по СБП", url=sbp_link)],
-                [InlineKeyboardButton(text="Я оплатил", callback_data=f"paid_{payload}")]
+                [InlineKeyboardButton(text="💳 Оплатить по СБП", url=sbp_link)],  # иконка 💳
+                [InlineKeyboardButton(text="📞 +7 911 313-41-99", callback_data="copy_phone")],
+                [InlineKeyboardButton(text="✅ Я оплатил", callback_data=f"paid_{payload}")]
             ])
             
-            # await message.answer(
-            #     f"<b>{book['name']}</b>\n"
-            #     f"💰 <b>{amount_str} ₽</b>\n\n"
-            #     f"📱 <b>Для ручного СБП перевода:</b>\n"
-            #     f"Получатель: <b>К. Сергей</b>\n"
-            #     f"Карта Тинькофф: <b>+7 911 313-41-99</b>\n\n"
-            #     f"После оплаты нажми «Я оплатил» ✅",
-            #     reply_markup=kb,
-            #     parse_mode="HTML"
-            # )
             await message.answer(
                 f"<b>{book['name']}</b>\n"
                 f"💰 <b>{amount_str} ₽</b>\n\n"
-                f"📱 Для ручного СБП перевода:\n"
-                f"Получатель: <b>К. Сергей</b>\n\n"
-                f"После оплаты нажми «Я оплатил» ✅",
+                f"Нажми номер для копирования → оплати СБП → «Я оплатил» ✅",
                 reply_markup=kb,
                 parse_mode="HTML"
             )
-            await message.answer(
-                "Карта Тинькофф:\n"
-                "<code>+7 911 313-41-99</code>",
-                parse_mode="HTML"
-            )
-
         else:
-            await message.answer("Книга не найдена.")
+            await message.answer("❌ Книга не найдена.")
     else:
-        await message.answer("Привет! Сканируй QR-код на книге.")
+        await message.answer("👋 Привет! Сканируй QR-код на книге.")
+
+@router.callback_query(F.data == "copy_phone")  # Убрал lambda
+async def copy_phone(call: CallbackQuery):
+    await call.message.answer(
+        "<b>📱 Карта Тинькофф:</b>\n"
+        "<code>+7 911 313-41-99</code>\n\n"
+        "Скопируй и оплати СБП 🙏",
+        parse_mode="HTML"
+    )
+    await call.answer("📋 Номер готов к копированию!")
 
 @dp.callback_query(F.data.startswith("paid_"))
 async def paid_handler(callback: CallbackQuery):
-    payload = callback.data[len("paid_"):]  # "book1_500"
+    payload = callback.data[len("paid_"):]
     book_id, amount_str = payload.split("_")
     book = BOOKS.get(book_id)
     
