@@ -65,7 +65,7 @@ async def start_handler(message: Message):
             sbp_link = SBP_QR_LINK_TEMPLATE.format(amount=amount_cents)
 
             kb = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="Оплатить по СБП", url=sbp_link)]
+                [InlineKeyboardButton(text="Оплатить по СБП", url=sbp_link)],
                 [InlineKeyboardButton(text="Я оплатил", callback_data=f"paid_{payload}")]
             ])
             
